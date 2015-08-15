@@ -1,0 +1,7 @@
+<% 
+	resp_doc = SpreePayuIntegration::Api.load_transaction(payment.response_code).to_xml
+%>
+
+<pre>
+<%= resp_doc %>
+</pre>

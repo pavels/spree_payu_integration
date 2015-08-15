@@ -1,0 +1,24 @@
+<div style="text-align: center; font-size: 26px;">Redirecting ... </div>
+<form action="https://secure.payu.com/paygw/UTF/NewPayment"
+method="POST" name="payform">
+ <input type="hidden" name="pos_id" value="<%= SpreePayuIntegration::Configuration.merchant_pos_id %>">
+ <input type="hidden" name="pos_auth_key" value="<%= SpreePayuIntegration::Configuration.pos_auth_key %>">
+ <input type="hidden" name="session_id" value="<%= @session_id %>">
+ <input type="hidden" name="order_id" value="<%= @order.number %>">
+ <input type="hidden" name="amount" value="<%= @order_amount %>">
+ <input type="hidden" name="desc" value="<%= @order_description %>">
+ <input type="hidden" name="client_ip" value="<%= request.remote_ip %>">
+ <input type="hidden" name="js" value="0">
+ <input type="hidden" name="email" value="<%= @order.email %>">
+ <input type="hidden" name="first_name" value="<%= @order.bill_address.firstname %>">
+ <input type="hidden" name="last_name" value="<%= @order.bill_address.lastname %> ">
+ <input type="hidden" name="language" value="<%= SpreePayuIntegration::Configuration.language %>">
+ <input type="hidden" name="ts" value="<%= @timestamp %>">
+ <input type="hidden" name="sig" value="<%= @signature %>">
+</form>
+<script language="JavaScript" type="text/javascript">
+ 	document.forms['payform'].js.value=1;
+	$( document ).ready(function() {
+		document.forms['payform'].submit();
+	});
+</script>

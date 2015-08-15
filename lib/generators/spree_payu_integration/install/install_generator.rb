@@ -4,7 +4,7 @@ module SpreePayuIntegration
       source_root File.expand_path("../templates", __FILE__)
 
       def add_initializer
-        copy_file "openpayu.rb", "config/initializers/openpayu.rb"
+        copy_file "spree_payu.rb", "config/initializers/spree_payu.rb"
       end
     end
   end

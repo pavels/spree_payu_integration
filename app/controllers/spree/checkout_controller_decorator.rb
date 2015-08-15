@@ -11,41 +11,34 @@ Spree::CheckoutController.class_eval do
     payment_method = Spree::PaymentMethod.find(pm_id)
 
     if payment_method && payment_method.kind_of?(Spree::PaymentMethod::Payu)
-      params = PayuOrder.params(@order, request.remote_ip, order_url(@order), payu_notify_url, order_url(@order))
-      response = OpenPayU::Order.create(params)
+      @timestamp = Time.now.to_i
+      @session_id = "#{@order.id}#{@timestamp}"
 
-      case response.status['status_code']
-      when 'SUCCESS'
-        persist_user_address
-        payment_success(payment_method)
-        redirect_to response.redirect_uri
-      else
-        payu_error
-      end
+      @order_amount = (@order.total * 100).to_i
+      @order_description = ((first_store = Spree::Store.first) && first_store.name).to_s
+
+      sig_template = [SpreePayuIntegration::Configuration.merchant_pos_id, 
+                      @session_id, 
+                      SpreePayuIntegration::Configuration.pos_auth_key, 
+                      @order_amount,
+                      @order_description,
+                      @order.number,
+                      @order.bill_address.firstname,
+                      @order.bill_address.lastname,
+                      @order.email,
+                      SpreePayuIntegration::Configuration.language,
+                      request.remote_ip,
+                      @timestamp,
+                      SpreePayuIntegration::Configuration.signature_key
+                       ]
+
+      @signature = Digest::MD5.hexdigest(sig_template.join(''))
+
+      render "payu/payment_form"
     end
 
   rescue StandardError => e
     payu_error(e)
-  end
-
-  def payment_success(payment_method)
-    payment = @order.payments.build(
-      payment_method_id: payment_method.id,
-      amount: @order.total,
-      state: 'checkout'
-    )
-
-    unless payment.save
-      flash[:error] = payment.errors.full_messages.join("\n")
-      redirect_to checkout_state_path(@order.state) and return
-    end
-
-    unless @order.next
-      flash[:error] = @order.errors.full_messages.join("\n")
-      redirect_to checkout_state_path(@order.state) and return
-    end
-
-    payment.pend!
   end
 
   def payu_error(e = nil)
