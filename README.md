@@ -9,7 +9,7 @@ Installation
 Add spree_payu_integration to your Gemfile:
 
 ```ruby
-gem 'spree_payu_integration', github: 'netguru/spree_payu_integration'
+gem 'spree_payu_integration', github: 'pavels/spree_payu_integration'
 ```
 
 Bundle your dependencies and run the installation generator:
@@ -22,7 +22,7 @@ bundle exec rails g spree_payu_integration:install
 Configuration
 -------------
 
-Don't forget to insert seller account details into `config/initializers/openpayu.rb`
+Don't forget to insert seller account details into `config/initializers/spree_payu.rb`
 
 Testing
 -------
@@ -42,4 +42,5 @@ Simply add this require statement to your spec_helper:
 require 'spree_payu_integration/factories'
 ```
 
+Copyright  2015 © Pavel Sorejs
 Copyright  2014 © [Netguru](https://netguru.co), released under the New BSD License
