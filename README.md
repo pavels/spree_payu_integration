@@ -43,4 +43,5 @@ require 'spree_payu_integration/factories'
 ```
 
 Copyright  2015 © Pavel Sorejs
+
 Copyright  2014 © [Netguru](https://netguru.co), released under the New BSD License
